@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+   
+<head>
+   
+	<!--Import Google Icon Font-->
+	<link href="materialize/css/icon.css" rel="stylesheet">	
+	
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	
+	<!--Import jQuery before materialize.js-->
+	<script type="text/javascript" src="materialize/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="materialize/js/md5.js"></script>
+	<script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+	
+   
+   <script type="text/javascript">
+   
+	function validate_signup()
+	{
+		var name=$('#name').val();
+		var email=$('#email').val();
+		var mobile=$('#mobile').val();
+		var username=$('#username').val();
+		var password=$('#password').val();
+		var passwordagain=$('#passwordagain').val();
+	   
+		if( name == "" || name==null )
+		{
+			$('#name').focus();
+			return false;
+		}
+		else if(username == "" || username==null )
+		{
+			$('#username').focus();
+			return false;
+		}
+		else if(email == "" || email==null )
+		{
+			$('#email').focus();
+			return false;
+		}
+		else if(mobile == "" || mobile==null )
+		{
+			$('#mobile').focus();
+			return false;
+		}
+		else if (password == "" || password == null )
+		{
+			$('#password').focus();
+			return false;
+		}
+		else if (passwordagain == "" || passwordagain==null )
+		{
+			$('#passwordagain').focus();
+			return false;
+		}
+
+		var atpos = email.indexOf("@");
+		var dotpos = email.lastIndexOf(".");
+		
+		// third condition was x.length <--->
+		if(atpos<1 || dotpos<atpos+2 || dotpos+2>= email.length) 
+		{
+			$('#email').focus();
+			return false;
+		}
+		
+		if(mobile.length != 10)
+		{
+			$('#mobile').focus();
+			return false;
+		}
+		
+		if(password != passwordagain)
+		{
+			$('#password').val("");
+			$('#passwordagain').val("");
+			$('#password').focus();
+			
+			return false;
+		}
+		
+		return true;
+	}
+   
+	function signupOutput(jsonStr)
+	{
+		var json = JSON.parse(jsonStr);
+		
+		if(json.status == "success")
+		{
+			Materialize.toast("User Successfully Created !");
+			return;
+		}
+		
+		switch(json.message)
+		{
+			case "d_name":
+				Materialize.toast("Name Already Exists, You Might Have An Account Already!", 3000);
+				$('#name').focus();
+				break;
+				
+			case "d_email":
+				Materialize.toast("Email Already Exists, You Might Have An Account Already!", 3000);
+				$('#email').focus();
+				break;
+				
+			case "d_mobile":
+				Materialize.toast("Mobile Already Exists, You Might Have An Account Already", 3000);
+				$('#mobile').focus();
+				break;
+				
+			case "d_username":
+				Materialize.toast("Username Already Exists, You May Have An Account Already", 3000);
+				$('#username').focus();
+				break;
+		}
+	}
+   
+	function validateForm()
+	{
+		var validation_result = validate_signup();
+		
+		if(validation_result)
+		{
+			var name=$('#name').val();
+			var email=$('#email').val();
+			var mobile=$('#mobile').val();
+			var username=$('#username').val();
+			var password=$('#password').val();
+		
+			$.post("signup.php",
+			{
+				table: "user",
+				action : "create",
+				user_name : name,
+				user_email: email,
+				user_mobile: mobile,
+				user_username: username,
+				user_password: md5(password)
+			},
+			function(data, status)
+			{
+				signupOutput(data);
+			});
+		}
+	}
+   
+	function isNumberKey(evt)
+	{
+		var charCode = (evt.which) ? evt.which : event.keyCode;
+			
+		if(charCode == 8)
+			return true;
+			
+		if (charCode != 46 && charCode > 31 
+			&& (charCode < 48 || charCode > 57))
+		{
+			//alert("fuck this validation !");
+			return false;
+		}
+			
+		var value = $('#mobile').val();
+			
+		if(!(value.length < 10))
+			return false;
+		else
+			return true;
+	}
+	
+	
+	
+   </script>
+</head>
+   
+ <body "width=50%"> 
+ <div class="row container">
+ 
+	
+ 
+	
+
+	<!--Sign up form-->
+    <div class="col s12 card">
+		
+		<blockquote style="margin: 0px; padding-left: 1.5rem; border-left: 5px solid #26a69a">
+			<h4 class="teal-text text-lighten-1"> Signup </h4>
+		</blockquote>
+		
+		<div class="row">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">person</i>
+				<input id="name" type="text" class="validate" required="" aria-required="true">
+				<label for="name" data-error="" data-success="">Name/Company</label>
+			</div>
+		<div class="input-field col s12">
+            <i class="material-icons prefix">person</i>
+            <input id="username" type="text" class="validate" required="" aria-required="true">
+            <label for="username" data-error="" data-success="">Username</label>
+    	</div>
+        <div class="col s6">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">email</i>
+				<input id="email" type="email" class="validate" required="" aria-required="true">
+				<label for="email" data-error="" data-success="">Email</label>
+			</div>
+        </div>
+        <div class="col s6">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">phone</i>
+				<input id="mobile" type="tel" onkeypress="return isNumberKey(event)" class="validate" required="*" aria-required="true">
+				<label for="mobile" data-error="" data-success="">Mobile</label>
+			</div>
+        </div>
+        <div class="col s6">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">lock</i>
+				<input id="password" type="password" class="validate" required="" aria-required="true">
+				<label for="password" data-error="" data-success="">Password</label>
+			</div>
+		</div>
+        <div class="col s6">
+			<div class="input-field col s12">
+				<i class="material-icons prefix">lock</i>
+				<input id="passwordagain" type="password" class="validate" required="" aria-required="true">
+				<label for="passwordagain" data-error="" data-success="">Re-type Password</label>
+			</div>
+		</div>
+		<div class="col s12">
+            <div class="input-field center col s12">
+                <button class="btn waves-effect waves-light" onclick="validateForm()">Signup</button>
+			</div>
+		</div>
+	</div>
+	
+	
+ </body>
+</html>

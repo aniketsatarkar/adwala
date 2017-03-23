@@ -1,0 +1,157 @@
+<!-- WORD COUNT UI TEMPLATE ! -->
+
+<script type="text/javascript">
+	
+	// function to divide string into lines, and return number
+	// of lines created, in a specific width.
+	function stringDivider(str, width, spaceReplacer) 
+	{
+		if (str.length>width) 
+		{
+			var p=width
+				
+			for (;p>0 && str[p]!=' ';p--);
+				
+			if (p>0) 
+			{
+				var left = str.substring(0, p);
+				var right = str.substring(p+1);
+				return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+			}
+		}
+			
+		return str;
+	}
+	
+	
+	function clearValues()
+	{
+		$('#charCount').html("0");
+		$('#wordCount').html("0");
+		$('#cost').html("0");
+		$('#ad_charge_cost').html("0");
+		$('#rextra_words').html("0");
+		$('#holiday_charge').html("0");
+		$('#total_cost').html("0");
+		$('#grand_total_cost').html("0");
+	}
+	
+	// For counting words >>>
+	function generateOutput()
+	{
+		if(jsonRate == null)
+			return;
+			
+		var ad_cost = jsonRate[0].rate;
+		var cost_per_extra_unit = jsonRate[0].extra_rate;
+		var words_for_ad = jsonRate[0].unit_count;
+		
+		// local variables >>
+		var totalCost   = 0;
+		var extra_cost  = 0;
+		var grand_total = 0;
+		// -------------------
+		
+		var inputString  = $('#inputText').val();
+			
+		if(inputString == '')
+		{
+			clearValues();
+			$('#outputText').html('');
+		}
+			
+		var filterString = inputString.replace( / +/g , ' ' ); 			filterString = filterString.replace(/\r?\n|\r/g, '');
+		var len = stringDivider(filterString, 20, "\n");
+			
+		var word_count = filterString.match(/\S+/g).length; 
+		$('#word_count').html(word_count); 
+			
+		if(word_count > words_for_ad)
+		{
+			extra_cost =  (word_count - words_for_ad) * cost_per_extra_unit;
+			$('#rextra_words').html("&#8377;" + extra_cost);
+		}
+		else
+		{
+			extra_cost = 0;
+			$('#rextra_words').html('0');
+		}
+			
+		
+		// calculate totla cost and grand total >>
+		totalCost = parseInt(ad_cost) + parseInt(extra_cost);
+		grand_total = Math.ceil(totalCost + ((3/100)*totalCost));
+		// ---------------------------------------
+			
+		$('#outputText').html(len);
+		$('#charCount').html(filterString.length);
+		$('#wordCount').html(word_count); 
+		$('#cost').html("&#8377;" + totalCost);
+		$('#ad_charge_cost').html("&#8377;" + ad_cost);
+		$('#total_cost').html("&#8377;" + totalCost);
+		$('#grand_total_cost').html("&#8377;" + grand_total);
+		$('#outputText').trigger('autoresize');
+	}
+	
+</script>
+
+
+<!-- div contain text input and output textareas-->
+<div class="row">
+	<div class="col s12">
+		<div class="col s6">
+			<div class="input-field col s12">
+				<textarea id="inputText" onkeyup="generateOutput()" onmouseout="generateOutput()" onkeydown="generateOutput()" class="materialize-textarea"></textarea>
+				<label for="textarea1">Ad Body</label>
+			</div>
+			<div class="col s12">
+				<table class='table centered'>
+					<thead class="orange accent-2">
+						<tr>
+							<th width="100">Characters</th>
+							<th width="100">Words</th>
+							<th width="100">Cost</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="orange accent-1">
+							<td id="charCount">0</td>
+							<td id="wordCount">0</td>
+							<td id="cost">0</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col s6">
+			<div class="input-field col s3 offset-s3">
+				<textarea id="outputText" disabled class="materialize-textarea text-black" style="width: auto; overflow: hidden; font-size: 100%; margin-left: 10px; border: none; background-color: #ffecb3;" value=""></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+		
+<div class="row">
+	<div class="col s12">
+		<table class='table centered'>
+			<thead class="orange accent-2">
+				<tr>
+					<th width="100">Base Cost</th>
+					<th width="100">Extra-Words</th>
+					<th width="100">Holiday</th>
+					<th width="100">Total</th>
+					<th width="100">Grand Total</th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr class="orange accent-1">
+					<td id="ad_charge_cost">0</td>
+					<td id="rextra_words">0</td>
+					<td id="holiday_charge">0</td>
+					<td id="total_cost">0</td>
+					<td id="grand_total_cost">0</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<!--Import Google Icon Font-->
+	<link href="materialize/css/icon.css" rel="stylesheet" />
+	
+	<!--Import materialize.css-->
+	<link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
+
+	<!--Let browser know website is optimized for mobile-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	
+	<!--Import jQuery before materialize.js-->
+	<script type="text/javascript" src="materialize/jquery-2.1.1.min.js">
+	</script>
+	<script type="text/javascript" src="materialize/js/materialize.min.js">
+	</script>
+	<script type="text/javascript" src="jquery.tablesorter/jquery.tablesorter.js"> </script>
+
+	<!-- Page Specific script -->
+	<script type="text/javascript" src="admin_dash.js"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() 
+		{
+			$('select').material_select();
+			$(".button-collapse").sideNav();
+			
+			$("#npaperTable").tablesorter({dateFormat:"uk"});
+			$("#editionTable").tablesorter({dateFormat:"uk"});
+			$("#couponTable").tablesorter({dateFormat:"uk"}); 
+			
+			showDashboard();	
+		});
+	</script>
+	
+	<style type="text/css">
+		body 
+		{
+			display: flex;
+			min-height: 100vh;
+			flex-direction: column;
+		}
+		
+		main 
+		{
+			flex: 1 0 auto;
+		}
+		
+		header, main, footer 
+		{
+			padding-left: 300px;
+		}
+
+		@media only screen and (max-width : 992px) 
+		{
+			header, main, footer 
+			{
+				padding-left: 0;
+			}
+		}
+		
+		th.header 
+		{ 
+			background-image: url(jquery.tablesorter/img/bg.gif); 
+			cursor: pointer; 
+			font-weight: bold; 
+			background-repeat: no-repeat; 
+			background-position: center right; 
+			padding-left: 20px; 
+			border-right: 1px solid #dad9c7; 
+			margin-left: -1px; 
+		} 
+		
+		th.headerSortUp 
+		{ 
+			background-image: url(jquery.tablesorter/img/asc.gif); 
+			background-color: #3399FF; 
+		} 
+		
+		th.headerSortDown 
+		{ 
+			background-image: url(jquery.tablesorter/img/desc.gif); 
+			background-color: #3399FF; 
+		}
+	</style>
+	
+</head>
+
+
+<body>
+
+	<!-- Header -->
+	<header>
+		<div class="navbar">
+			<nav class="teal">
+				<div class="nav-wrapper">
+					<a href="#!" class="brand-logo">Logo</a>
+					
+					<a href="#" data-activates="mobile-demo" id="mobile_menu" class="button-collapse" style="width: 60px">
+						<i class="material-icons center">menu</i>
+					</a>
+					
+					<a href="#" data-activates="userPanel" id="user_nav" class="button-collapse hide-on-large-only right" style="width: 60px">
+						<i class="material-icons center">person</i>
+					</a>
+				  
+					<ul class="right hide-on-med-and-down">
+						<li><a href="#">Link-1</a></li>
+						<li><a href="#">Link-2</a></li>
+						<li><a href="#">Link-3</a></li>
+						<li><a href="#">Link-4</a></li>
+					</ul>
+					<ul class="side-nav" id="mobile-demo">
+						<li><a href="#">Link-1</a></li>
+						<li><a href="#">Link-2</a></li>
+						<li><a href="#">Link-3</a></li>
+						<li><a href="#">Link-4</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+    </header>
+
+	<!-- Dashboard Side Navigation Panel -->
+	<ul id="userPanel" class="side-nav fixed">
+		<li>
+			<div class='userView teal'> 
+				<img class='circle' src='images/adolf1.jpg'/>
+				<span class='white-text name'> Aniket Satarkar </span> 
+				<span class='white-text email'> aniketsatarkar9@gmail.com </span>
+			</div> 
+		</li> 
+		<li> 
+			<a class='waves-effect teal lighten-2' onclick='showDashboard(this)'>
+			<i class='material-icons'>dashboard</i>Dashboard</a> 
+		</li> 
+		<li> 
+			<div class='divider'></div> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick="showNewspapers(this)"><i class='material-icons'>save</i>Newspapers</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showEditions(this)'><i class='material-icons'>save</i>Editions</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showRates(this)'><i class='material-icons'>save</i>Rates</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showPackages(this)'><i class='material-icons'>save</i>Packages</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showOffers(this)'><i class='material-icons'>save</i>Offers</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showCoupons(this)'><i class='material-icons'>save</i>Coupons</a> 
+		</li> 
+		<li> 
+			<div class='divider'></div> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='showSettings(this)'> <i class='material-icons'>settings</i>Settings</a> 
+		</li> 
+		<li> 
+			<a class='waves-effect' onclick='logout()'><i class='material-icons'>close</i>Logout</a> 
+		</li>
+	</ul>
+	
+	<!-- Main Contents -->
+	<main id="main" style="margin-left: 20px; margin-right: 20px">
+		
+		<!-- Dashboard Div -->
+		<div id="dashboard_div" class="row section">
+			<div class="row">
+				<div class="col s4 center card z-depth-1 hoverable"> 
+					<ul>
+						<li><h1 class="teal-text">55</h1></li>
+						<div class="divider teal"></div>
+						<li><h5>New Ads</h5></li>
+						<div class="divider teal"></div>
+						<li style="margin-top:10px;"><a class="btn waves-effect" onclick="func()"> View </a></li>
+					</ul>
+				</div>
+				<div class="col s4 center card z-depth-1 hoverable"> 
+					<ul>
+						<li><h1 class="teal-text">55</h1></li>
+						<div class="divider teal"></div>
+						<li><h5>Paid Ads</h5></li>
+						<div class="divider teal"></div>
+						<li style="margin-top:10px;"><a class="btn waves-effect" onclick="func()"> View </a></li>
+					</ul>
+				</div>
+				<div class="col s4 center card z-depth-1 hoverable "> 
+					<ul>
+						<li><h1 class="teal-text">55</h1></li>
+						<div class="divider teal"></div>
+						<li><h5>Unpaid Ads</h5></li>
+						<div class="divider teal"></div>
+						<li style="margin-top:10px;">
+							<a class="btn waves-effect" onclick="func()"> View </a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+			
+			
+		<!--edit Newspaper-->			
+		<div id="newspapers_div">
+			<!-- newspaper table div -->
+			<div class="row section">
+					<blockquote><h5>Newspapers</h5></blockquote>
+					<div class="divider"></div>
+				<!--Newspaper table div-->
+				<div class="col s12 m12 l12">
+					<table id="npaperTable" class="tablesorter centered"> 
+						<thead> 
+							<th>Name</th> 
+							<th>Editions</th> 
+							<th>Language</th> 
+							<th style="width:120px;">Action</th> 
+						</thead> 
+						<tbody> 
+							<tr> 
+								<td>Punya Nagari</td>
+								<td>Akola, Amravati, Ahmadnagar, Nagpur, Nande, Pune, Mumbai, Yavatmal</td>
+								<td>Marathi</td>
+								<td>
+									<div class='col 2 s12'>
+										<div class='col s6 no-padding center'>
+											<a class='btn no-padding lighten-4' data-paper-id='1' onclick='editNewspaper_btn(this)'><i class='material-icons tooltipped' data-tooltip='Edit' style='margin-left: 8px; margin-right: 8px'>edit</i></a>
+										</div>
+										<div class='col s6 no-padding center'>
+											<a class='btn red no-padding' data-paper-id='1' onclick="deleteNewspaper_btn(this)"><i class='material-icons tooltipped' data-tooltip='Delete' style='margin-left: 8px; margin-right: 8px'>delete</i></a>
+										</div>
+									</div>
+								</td>
+							</tr> 
+							<tr> 
+								<td>Sakal</td>
+								<td>Akola, Amravati, Ahmadnagar, Nagpur, Nande, Pune, Mumbai, Yavatmal</td>
+								<td>Marathi</td>
+								<td>
+									<div class='col 2 s12'>
+										<div class='col s6 no-padding center'>
+											<a class='btn no-padding lighten-4' data-paper-id='1' onclick='editNewspaper_btn(this)'><i class='material-icons tooltipped' data-tooltip='Edit' style='margin-left: 8px; margin-right: 8px'>edit</i></a>
+										</div>
+										<div class='col s6 no-padding center'>
+											<a class='btn red no-padding' data-paper-id='1' onclick='deleteNewspaper_btn(this)'><i class='material-icons tooltipped' data-tooltip='Delete' style='margin-left: 8px; margin-right: 8px'>delete</i></a>
+										</div>
+									</div>
+								</td>
+							</tr> 
+						</tbody> 
+					</table>
+				</div>
+			</div>
+			
+			<!--newspaper edit form div -->
+			<div class="row section">
+				<blockquote><h5>Edit Newspaper</h5></blockquote>
+				<div class="divider"></div>
+				<div class="col s12 card">
+					<div class="row">
+						<div class="col s12 m12 l6">
+							<div class="input-field col s12">
+							<input type="text" id="paper_name"> </input>
+							<label for="paper_name">Newspaper Name</label>
+							</div>
+						</div>
+						<div class="col s12 m12 l6">
+							<div class="input-field col s12">
+								<input type="text" id="paper_lang"> </input>
+								<label for="paper_lang">Newspaper Language</label>
+							</div>												
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12 m12 l6">
+							<div class="input-field col s12">
+								<select multiple>
+									<option value="" disabled selected>Choose Newspaper Editions</option>
+									<option value="1">Option 1</option>
+									<option value="1">Option 1</option>
+									<option value="1">Option 1</option>
+									<option value="2">Option 2</option>
+								</select>
+								<label>Select Editions</label>
+							</div>
+						</div>
+						<div class="col s12 m12 l6">
+							<div class="input-field col s12">
+								<div class="file-field input-field">
+									<div class="btn">
+										<span>Logo</span>
+										<input type="file" id="file_upload">
+									</div>
+									<div class="file-path-wrapper">
+										<input class="file-path validate" type="text">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="divider"></div>
+					<div class="divider"></div>
+					<div class="row section">
+						<div class='col s12 m5 l4 right'>
+							<a id="search_btn" class="waves-effect btn right">Clear</a>
+							<a id="search_btn" class="waves-effect btn left">Create</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+		<!--edit Edition-->		
+		<div id="editions_div">
+			<!-- edition table div -->
+			<div class="row section">
+				<blockquote><h5>Editions</h5></blockquote>
+				<div class="divider"></div>
+				
+				<div>
+					<div class="col s12 m12 l12 center">
+						<table id="editionTable" class="tablesorter centered"> 
+							<thead> 
+								<th>Editions</th> 
+								<th style="width:200px;">Action</th> 
+							</thead> 	
+							<tbody>
+							<tr>
+								<td>Pune</td>
+								<td>
+									<div class='col 2 s12'>
+										<div class='col s6 no-padding center'>
+											<a class='btn no-padding lighten-4' data-paper-id='1' onclick='editEdition_btn(this)'><i class='material-icons tooltipped' data-tooltip='Edit' style='margin-left: 8px; margin-right: 8px'>edit</i></a>
+										</div>
+										<div class='col s6 no-padding center'>
+											<a class='btn red no-padding' data-paper-id='1' onclick='deleteEdition_btn(this)'><i class='material-icons tooltipped' data-tooltip='Delete' style='margin-left: 8px; margin-right: 8px'>delete</i></a>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>Nagpur</td>
+								<td>
+									<div class='col 2 s12'>
+										<div class='col s6 no-padding center'>
+											<a class='btn no-padding lighten-4'><i class='material-icons tooltipped' data-tooltip='Edit' style='margin-left: 8px; margin-right: 8px'>edit</i></a>
+										</div>
+										<div class='col s6 no-padding center'>
+											<a class='btn red no-padding'><i class='material-icons tooltipped' data-tooltip='Delete' style='margin-left: 8px; margin-right: 8px'>delete</i></a>
+										</div>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- edit editions div-->
+			<div class="row">
+				<blockquote><h5>Edit Editions</h5></blockquote>
+				<div class="divider"></div>
+			
+				<div class="row section card">
+					<div class="input-field col s12">
+						<input type="text" id=""></input>
+						<label>Edition Name</label>
+					</div>
+					<div class="col s12">
+						<a class="btn right" onclick="func()">Create Edition</a>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+			
+		<!--edit Rates-->			
+		<div id="rates_div">
+		
+			<!-- NEED RATE TABLE -->
+			<!--       UI        -->
+		
+			<!-- Rate: newspaper & edition selection -->
+			<div class="row section">
+				<blockquote><h5>Rates</h5></blockquote>
+				<div class="divider"></div>
+					
+				<div class="row section">
+					<div class="col l6 m6 s12">
+						<div class="input-field col l12 m12 s12">
+							<select class="icons">
+								<option value="" disabled selected>Select Newspaper</option>
+								<option value="" data-icon="logos/sakal1.png">Sakal</option>
+								<option value="" data-icon="logos/Deshonnati1.png">Deshonnati</option>
+								<option value="" data-icon="logos/Divya_Marathi1.png">Divya Marathi</option>
+							</select>
+							<label>Newspaper</label>
+						</div>
+					</div>
+					<div class="col l6 m6 s12">
+						<div class="input-field col l12 m12 s12">
+							<select>
+								<option value="" disabled selected>Select Edition</option>
+								<option value="1">Nagpur</option>
+								<option value="2">Pune</option>
+								<option value="3">Mumbai</option>
+							</select>
+							<label>Edition</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Edit Classified-Text Rate -->
+			<div class="row section card">
+				<div class="col s12">
+					<blockquote style="margin-top: 0px; margin-bottom:8px">
+						<strong>Classified Text</strong>
+					</blockquote>
+					<div class="divider"></div>
+				</div>
+				<div class="col s12 m12 l12 section">
+					<table id="classified_rate" class="centered"> 
+						<thead> 
+							<th>Unit</th> 
+							<th>Minium Count</th> 
+							<th>Rate</th> 
+							<th>Rate per extra unit</th> 
+							<th>Holiday rate</th> 
+						</thead> 	
+						<tbody>
+							<tr>
+								<td>
+									<div class="input-field col l12 m12 s12">
+										<select>
+											<option value="1">Lines</option>
+											<option value="2">Words</option>
+										</select>
+										<label>Unit</label>
+									</div>		
+								</td>
+								<td>
+									<div class="input-field col s12">
+										<input type="text" id=""></input>
+										<label for="">count</label>
+									</div>
+								</td>
+								<td>
+									<div class="input-field col s12">
+										<input type="text" id=""></input>
+										<label for="">rate</label>
+									</div>
+								</td>
+								<td>
+									<div class="input-field col s12">
+										<input type="text" id=""></input>
+										<label for="">rate</label>
+									</div>
+								</td>
+								<td>
+									<div class="input-field col s12">
+										<input type="text" id=""></input>
+										<label for="">rate</label>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				
+					<div class="col s12 ">
+						<a class="btn right" onclick="func()">
+					Submit</a>
+					</div>
+				</div>
+			</div>
+					
+			<!-- Edit Classified-Display Rate -->
+			<div class="row section card">
+				<div class="col s12">
+					<blockquote style="margin-top: 0px; margin-bottom:8px">
+						<strong>Classified Display</strong>
+					</blockquote>
+					<div class="divider"></div>
+				</div>
+				<div class="col s12 section">
+					<div class="input-field col s12">
+						<input type="text" id=""></input>
+						<label for="">Rate per cm <sup>2</sup></label>
+					</div>
+					<div class="col s12">
+						<a class="btn right" onclick="func()">Submit</a>
+					</div>
+				</div>
+			</div>
+						
+			<!-- Edit Display Rate -->
+			<div class="row section card">
+				<div class="col s12">
+					<blockquote style="margin-top: 0px; margin-bottom:8px">
+						<strong>Display Ad</strong>
+					</blockquote>
+					<div class="divider"></div>
+				</div>
+				<div class="row">
+					<div class="divider"></div>
+				</div>
+				<div class="col s12 section">
+					<div class="input-field col s12">
+						<input type="text" id=""></input>
+						<label for="">Rate per cm <sup>2</sup></label>
+					</div>
+					<div class="col s12">
+						<a class="btn right" onclick="func()">
+						Submit</a>
+					</div>
+				</div>
+			</div>
+		</div>		
+
+		
+		<!--edit Packages [NOTING DONE YET] -->
+		<div id="packages_div">			
+			<div class="row section">
+				<div class="row">
+					<blockquote><h5>Packages</h5></blockquote>
+					<div class="divider"></div>
+				</div>
+			</div>
+		</div>			
+
+		
+		<!-- edit Offers [NOTING DONE YET] -->			
+		<div id="offers_div">
+			<div class="row section">
+				<div class="row">
+						<blockquote><h5>Offers</h5></blockquote>
+						<div class="divider"></div>
+				</div>
+			</div>
+		</div>			
+
+		
+		<!-- edit Coupons -->			
+		<div id="coupons_div" >
+		
+			<!-- coupon table div -->
+			<div class="row section">
+				<blockquote><h5>Coupons</h5></blockquote>
+				<div class="divider"></div>
+				
+				<div class="col s12 m12 l12">
+					<table id="couponTable" class="tablesorter centered"> 
+						<thead> 
+							<th>Coupon code</th> 
+							<th>Coupon amount</th> 
+							<th>Coupon for</th> 
+							<th>Created On</th> 
+							<th>Is Coupon Used</th> 
+							<th style="width:120px;">Action</th> 
+						</thead> 
+						<tbody>
+						<tr>
+							<td>SAK200</td>
+							<td>Rs 200</td>
+							<td><a href="#">ABC XYZ</a></td>
+							<td>12-02-2017</td>
+							<td><b class="green-text">Yes</b></td>
+							<td>
+								<div class='col s12 no-padding center'>
+									<a class='btn red no-padding' data-paper-id='1' onclick='deleteCoupon_btn(this)'><i class='material-icons tooltipped' data-tooltip='Delete' style='margin-left: 8px; margin-right: 8px'>delete</i></a>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<!-- edit coupons div -->
+			<div class="row section">
+				<blockquote><h5>Edit Coupons</h5></blockquote>
+				<div class="divider"></div>
+				
+				<div class="row section card">
+					<div class="col s12 m4 l4">
+						<div class="input-field col s12">
+							<input type="text" id="coupon_code"> </input>
+							<label for="coupon_code">Coupon Code</label>
+						</div>
+					</div>
+					<div class="col s12 m4 l4">
+						<div class="input-field col s12">
+							<input type="text" id="coupon_amount"> </input>
+							<label for="coupon_amount">Coupon Amount</label>
+						</div>
+					</div>
+					<div class="col s12 m4 l4 input-field">
+						<select multiple>
+							<option value="" disabled selected>For User</option>
+							<option value="1">Option 1</option>
+							<option value="1">Option 1</option>
+							<option value="1">Option 1</option>
+							<option value="2">Option 2</option>
+						</select>
+						<label>Select User</label>
+					</div>
+					<div class="col s12">
+						<a class="btn right" onclick="func()">Submit</a>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+		<!-- Settings -->			
+		<div id="setting_div" class="row section"></div>
+
+	</main>
+	
+	<!-- FOOTER -->
+	<footer class="page-footer teal">
+        <div class="container">
+            <div class="row">
+				<div class="col l6 s12">
+					<h5 class="white-text">Footer Content</h5>
+					<p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+				</div>
+				<div class="col l4 offset-l2 s12">
+					<h5 class="white-text">Links</h5>
+					<ul>
+						<li>
+							<a class="grey-text text-lighten-3" href="#!">Link 1</a>
+						</li>
+						<li>
+							<a class="grey-text text-lighten-3" href="#!">Link 2</a>
+						</li>
+						<li>
+							<a class="grey-text text-lighten-3" href="#!">Link 3</a>
+						</li>
+						<li>
+							<a class="grey-text text-lighten-3" href="#!">Link 4</a>
+						</li>
+					</ul>
+				</div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+			<div class="container">2014 Copyright Text
+			
+			<a href="#" data-activates="mobile-demo" id="mobile_menu" class="button-collapse hide-on-large-only right">
+				<i class="material-icons white-text" style="font-size: 40px; margin: 7px">menu</i>
+			</a>
+			<a href="#" data-activates="userPanel" class="button-collapse hide-on-large-only right">
+				<i class="material-icons white-text" style="font-size: 40px; margin: 7px">person</i>
+			</a>
+			
+			<a> 
+				<i class="material-icons">arraow</i>	
+			</a>
+			
+			</div>
+        </div>
+    </footer>
+	
+</body>
+</html>
